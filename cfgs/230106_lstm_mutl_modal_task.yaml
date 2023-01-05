@@ -1,0 +1,56 @@
+SAVE_ROOT: ./results/230106_lstm_mutl_modal_task.yaml
+
+MODEL:
+  NAME: CUSTOM_FUSION
+  ENCODER:
+    BLOCK:
+      - TYPE: PlainLSTM
+        BIDIRECTIONAL: True # True or False
+        HIDDEN: 512
+        FEATURE: 512
+        NUM_LAYER: 2
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024  
+  DECODER:
+    BLOCK:
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024
+
+DATASET:
+  SEED: 777
+  NAME: full_cell
+  ROOT: ./data
+  INPUT:
+    - DATA: META
+      TYPE: norm_new
+      ITEM:
+        - anode_AM thickness (㎛)
+        - anode_Loading (mg/cm2)
+        - anode_Porosity
+        - cathod_AM thickness (㎛)
+        - cathod_Loading (mg/cm2)
+        - cathod_Porosity
+    - DATA: TIME
+      TYPE: split_interp
+      ITEM: 충전_전압(V)_cycle1_len1000
+      LEN: 1000
+  OUTPUT: 
+    - DATA: CYCLE
+      TYPE: avg
+      ITEM: 충전 용량(Ah)
+      LOSS: MSE
+      METRIC:
+        - MSE
+        - MAE
+        - R2

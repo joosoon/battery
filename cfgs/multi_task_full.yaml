@@ -1,0 +1,66 @@
+SAVE_ROOT: ./results/new_multi_task_full
+MODEL:
+  NAME: CUSTOM_FUSION
+  ENCODER:
+    BLOCK:
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024
+  DECODER:
+    BLOCK:
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024
+      - TYPE: MLP
+        LAYER: 3
+        ACTIVATION: GELU
+        HIDDEN: 1024
+        FEATURE: 1024
+
+DATASET:
+  SEED: 777
+  NAME: full_cell
+  ROOT: ./data
+  INPUT:
+    - DATA: META
+      TYPE: norm
+      ITEM:
+        - anode_전극 두께 (㎛)
+        - anode_AM thickness (㎛)
+        - anode_Weight (mg)
+        - anode_Electrode weight (w/o foil,g)
+        - anode_Loading mass of AM (mg)
+        - anode_Loading (mg/cm2)
+        - anode_Porosity
+        - anode_Loading density (mAh/cm2)
+        - anode_Theoretical capacity (mAh)
+        - cathod_전극 두께 (㎛)
+        - cathod_AM thickness (㎛)
+        - cathod_Weight (mg)
+        - cathod_Electrode weight (w/o foil,g)
+        - cathod_Loading mass of AM (mg)
+        - cathod_Loading (mg/cm2)
+        - cathod_Porosity
+        - cathod_Loading density (mAh/cm2)
+        - cathod_Theoretical capacity (mAh)
+  OUTPUT: 
+    - DATA: CYCLE
+      TYPE: avg
+      ITEM: 충전 용량(Ah)
+      LOSS: MSE
+      METRIC:
+        - MSE
+        - MAE
+        - R2
+    - DATA: CYCLE
+      TYPE: avg
+      ITEM: 방전 용량(Ah)
+      LOSS: MSE
+      METRIC:
+        - MSE
+        - MAE
+        - R2        
