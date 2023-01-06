@@ -1,10 +1,14 @@
 # LSTM based method
+
+python train_net.py --cfg 230106_base.yaml                
+python train_net.py --cfg 230106_lstm_base.yaml           
+python train_net.py --cfg 230106_lstm_mutl_modal.yaml     
+python train_net.py --cfg 230106_lstm_mutl_task.yaml
+python train_net.py --cfg 230106_lstm_mutl_modal_task.yaml
+
 python train_net.py --max_epoch 5 --cfg 230106_lstm_base
 python inference.py --save_numpy --draw_graph --draw_gt --cfg 230106_lstm_base
 python inverse_test.py --cfg 230106_lstm_base
-
-python train_net.py --max_epoch 5 --cfg 230106_lstm_base
-
 
 
 

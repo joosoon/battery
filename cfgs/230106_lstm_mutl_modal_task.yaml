@@ -4,16 +4,21 @@ MODEL:
   NAME: CUSTOM_FUSION
   ENCODER:
     BLOCK:
-      - TYPE: PlainLSTM
-        BIDIRECTIONAL: True # True or False
-        HIDDEN: 512
-        FEATURE: 512
-        NUM_LAYER: 2
       - TYPE: MLP
         LAYER: 3
         ACTIVATION: GELU
         HIDDEN: 1024
         FEATURE: 1024  
+      - TYPE: PlainLSTM
+        BIDIRECTIONAL: True # True or False
+        HIDDEN: 512
+        FEATURE: 512
+        NUM_LAYER: 2
+      - TYPE: PlainLSTM
+        BIDIRECTIONAL: True # True or False
+        HIDDEN: 512
+        FEATURE: 512
+        NUM_LAYER: 2
   DECODER:
     BLOCK:
       - TYPE: MLP
@@ -45,10 +50,29 @@ DATASET:
       TYPE: split_interp
       ITEM: 충전_전압(V)_cycle1_len1000
       LEN: 1000
+      TRNSFORM: 
+        ITEM: full #
+        MODE: random # random, full, shuffle
+    - DATA: TIME
+      TYPE: split_interp
+      ITEM: 방전_전압(V)_cycle1_len1000
+      LEN: 1000
+      TRNSFORM: 
+        ITEM: full #
+        MODE: random # random, full, shuffle
+
   OUTPUT: 
     - DATA: CYCLE
       TYPE: avg
       ITEM: 충전 용량(Ah)
+      LOSS: MSE
+      METRIC:
+        - MSE
+        - MAE
+        - R2
+    - DATA: CYCLE
+      TYPE: avg
+      ITEM: 방전 용량(Ah)
       LOSS: MSE
       METRIC:
         - MSE

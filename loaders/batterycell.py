@@ -335,14 +335,14 @@ class BatteryCellData(Dataset):
                                 RandomZeroMasking(),
                                 RandomAdditiveGaussianNoise(),
                                 ],
-                            mode=cfg["mode"]
+                            mode=cfg["MODE"]
                             )
         else:
             transform = Compose(
                             transforms=[
                                 RandomAdditiveGaussianNoise(),
                                 ],
-                            mode=cfg["mode"]
+                            mode=cfg["MODE"]
                             )
         return transform
 

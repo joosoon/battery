@@ -14,6 +14,11 @@ MODEL:
         HIDDEN: 512
         FEATURE: 512
         NUM_LAYER: 2
+      - TYPE: PlainLSTM
+        BIDIRECTIONAL: True # True or False
+        HIDDEN: 512
+        FEATURE: 512
+        NUM_LAYER: 2
   DECODER:
     BLOCK:
       - TYPE: MLP
@@ -40,6 +45,17 @@ DATASET:
       TYPE: split_interp
       ITEM: 충전_전압(V)_cycle1_len1000
       LEN: 1000
+      TRNSFORM: 
+        ITEM: full #
+        MODE: random # random, full, shuffle
+    - DATA: TIME
+      TYPE: split_interp
+      ITEM: 방전_전압(V)_cycle1_len1000
+      LEN: 1000
+      TRNSFORM: 
+        ITEM: full #
+        MODE: random # random, full, shuffle
+
   OUTPUT: 
     - DATA: CYCLE
       TYPE: avg

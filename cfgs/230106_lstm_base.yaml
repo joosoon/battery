@@ -6,8 +6,8 @@ MODEL:
     BLOCK:
       - TYPE: PlainLSTM
         BIDIRECTIONAL: True # True or False
-        HIDDEN: 512
-        FEATURE: 512
+        HIDDEN: 1024
+        FEATURE: 1024
         NUM_LAYER: 2
   DECODER:
     BLOCK:
@@ -26,6 +26,10 @@ DATASET:
       TYPE: split_interp
       ITEM: 충전_전압(V)_cycle1_len1000
       LEN: 1000
+      TRNSFORM: 
+        ITEM: full #
+        MODE: random # random, full, shuffle
+
   OUTPUT: 
     - DATA: CYCLE
       TYPE: avg
