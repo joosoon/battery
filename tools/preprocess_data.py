@@ -107,7 +107,9 @@ def extract_cell_data(data_root, save_root, del_cells=None):
     #     print("[{}/{}] {}".format(file_idx, len(file_list), file_name))
         
         # load excel
-        data_excel = pd.ExcelFile(os.path.join(data_root, file_name))
+        if file_name.startswith("."): continue
+        # data_excel = pd.ExcelFile(os.path.join(data_root, file_name))
+        data_excel = pd.ExcelFile(os.path.join(data_root, file_name), engine='openpyxl')
         sheet_names = data_excel.sheet_names
 
         # matching sheet names    
@@ -228,52 +230,52 @@ if __name__ == '__main__':
     ############################################
     # 1-1. extract meta data as .pickle format #
     ############################################
-    # save as pickle
-    file_name = "./data/excel/schedule.xlsx"
-    sheet_name = "AI"
-    save_name = './data/pickle/cell_meta_raw.pickle'
-    META_ITEMS = [
-        '전극 두께 (㎛)', 'AM thickness (㎛)', 'Weight (mg)', 
-        'Electrode weight (w/o foil,g)', 'Loading mass of AM (mg)', 
-        'Loading (mg/cm2)', 'Porosity', 'Loading density (mAh/cm2)', 
-        'Theoretical capacity (mAh)', 
-        '전극 두께 (㎛).1', 'AM thickness (㎛).1', 'Weight (mg).1', 
-        'Electrode weight (w/o foil,g).1', 'Loading mass of AM (mg).1', 
-        'Loading (mg/cm2).1', 'Porosity.1', 'Loading density (mAh/cm2).1', 
-        'Theoretical capacity (mAh).1' ]
-    save_meta_as_pickle(file_name, sheet_name, save_name, 
-                        META_ITEMS, del_cells=DEL_CELLS)
+    # # save as pickle
+    # file_name = "./data/excel/schedule.xlsx"
+    # sheet_name = "AI"
+    # save_name = './data/pickle/cell_meta_raw.pickle'
+    # META_ITEMS = [
+    #     '전극 두께 (㎛)', 'AM thickness (㎛)', 'Weight (mg)', 
+    #     'Electrode weight (w/o foil,g)', 'Loading mass of AM (mg)', 
+    #     'Loading (mg/cm2)', 'Porosity', 'Loading density (mAh/cm2)', 
+    #     'Theoretical capacity (mAh)', 
+    #     '전극 두께 (㎛).1', 'AM thickness (㎛).1', 'Weight (mg).1', 
+    #     'Electrode weight (w/o foil,g).1', 'Loading mass of AM (mg).1', 
+    #     'Loading (mg/cm2).1', 'Porosity.1', 'Loading density (mAh/cm2).1', 
+    #     'Theoretical capacity (mAh).1' ]
+    # save_meta_as_pickle(file_name, sheet_name, save_name, 
+    #                     META_ITEMS, del_cells=DEL_CELLS)
 
-    # re-ranging META DATA / range: [0, 1]
-    file_name = './data/pickle/cell_meta_raw.pickle'
-    META_ITEMS = ['전극 두께 (㎛)', 'AM thickness (㎛)', 'Weight (mg)', 
-                  'Electrode weight (w/o foil,g)', 'Loading mass of AM (mg)', 
-                  'Loading (mg/cm2)', 'Porosity', 'Loading density (mAh/cm2)', 
-                  'Theoretical capacity (mAh)']
-    get_range_meta(file_name, META_ITEMS)
-    save_name = './data/pickle/cell_meta_norm.pickle'
-    META_MEANS = {
-        'cathod_전극 두께 (㎛)': 1000,
-        'anode_전극 두께 (㎛)': 100,
-        'cathod_AM thickness (㎛)': 1000,
-        'anode_AM thickness (㎛)': 100,
-        'cathod_Weight (mg)': 100,
-        'anode_Weight (mg)': 10,
-        'cathod_Electrode weight (w/o foil,g)': 0.1,
-        'anode_Electrode weight (w/o foil,g)': 0.1,
-        'cathod_Loading mass of AM (mg)': 100,
-        'anode_Loading mass of AM (mg)': 10,
-        'cathod_Loading (mg/cm2)': 10,
-        'anode_Loading (mg/cm2)': 10,
-        'cathod_Porosity': 1,
-        'anode_Porosity': 1,
-        'cathod_Loading density (mAh/cm2)': 10,
-        'anode_Loading density (mAh/cm2)': 10,
-        'cathod_Theoretical capacity (mAh)': 10000,
-        'anode_Theoretical capacity (mAh)': 10000}
-    del_list = ["1.1-20", "1.2-28", "2.1-12", "2.1-26", "2.3-31", "3.2-27"]
-    re_range_meta(file_name, save_name, META_MEANS)
-    exit()
+    # # re-ranging META DATA / range: [0, 1]
+    # file_name = './data/pickle/cell_meta_raw.pickle'
+    # META_ITEMS = ['전극 두께 (㎛)', 'AM thickness (㎛)', 'Weight (mg)', 
+    #               'Electrode weight (w/o foil,g)', 'Loading mass of AM (mg)', 
+    #               'Loading (mg/cm2)', 'Porosity', 'Loading density (mAh/cm2)', 
+    #               'Theoretical capacity (mAh)']
+    # get_range_meta(file_name, META_ITEMS)
+    # save_name = './data/pickle/cell_meta_norm.pickle'
+    # META_MEANS = {
+    #     'cathod_전극 두께 (㎛)': 1000,
+    #     'anode_전극 두께 (㎛)': 100,
+    #     'cathod_AM thickness (㎛)': 1000,
+    #     'anode_AM thickness (㎛)': 100,
+    #     'cathod_Weight (mg)': 100,
+    #     'anode_Weight (mg)': 10,
+    #     'cathod_Electrode weight (w/o foil,g)': 0.1,
+    #     'anode_Electrode weight (w/o foil,g)': 0.1,
+    #     'cathod_Loading mass of AM (mg)': 100,
+    #     'anode_Loading mass of AM (mg)': 10,
+    #     'cathod_Loading (mg/cm2)': 10,
+    #     'anode_Loading (mg/cm2)': 10,
+    #     'cathod_Porosity': 1,
+    #     'anode_Porosity': 1,
+    #     'cathod_Loading density (mAh/cm2)': 10,
+    #     'anode_Loading density (mAh/cm2)': 10,
+    #     'cathod_Theoretical capacity (mAh)': 10000,
+    #     'anode_Theoretical capacity (mAh)': 10000}
+    # del_list = ["1.1-20", "1.2-28", "2.1-12", "2.1-26", "2.3-31", "3.2-27"]
+    # re_range_meta(file_name, save_name, META_MEANS)
+    # exit()
 
 
     ############
@@ -285,6 +287,7 @@ if __name__ == '__main__':
     # save_root = "./data/numpy/cycle/raw"
     # extract_cell_data(data_root, save_root, del_cells=DEL_CELLS)
     # count_data(save_root)
+    # exit()
 
     ###########################################################
     # 2-2. dividing raw CAPACITY data with LOADING MASS OF AM #
@@ -314,6 +317,10 @@ if __name__ == '__main__':
 
     # save_root = "./data/numpy/cycle/avg"
     # count_data(save_root)
+
+    #######################
+    # 2-4. analysis power #
+    #######################
 
 
 
