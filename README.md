@@ -1,1 +1,1 @@
-# battery-performance-prediciton
+# Battery Electrode Design Process Using Deep Neural Network
