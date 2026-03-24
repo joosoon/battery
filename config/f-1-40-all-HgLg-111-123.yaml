@@ -1,0 +1,154 @@
+SAVE_ROOT: /HDD/battery/results_final/f-1-40-all-HgLg-111-123
+TRINER:
+  LR: 0.001
+  WD: 0
+  BATCH_SIZE: 64
+  NUM_WORKER: 4
+DATASET:
+  SEED: 123
+  ROOT: ./dataset
+  TESTSET: FILTER_6FOLD_1_SEED111
+  NUM_TEST: 40
+  INPUT:
+  - NAME: dp_c
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - cathode_loading_density
+    - cathode_porosity
+    - cathode_AM_thickness
+  - NAME: dp_a
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - anode_loading_density
+    - anode_porosity
+    - anode_AM_thickness
+  - NAME: dp_l
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - cathode_loading_density
+    - anode_loading_density
+  - NAME: dp_p
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - cathode_porosity
+    - anode_porosity
+  - NAME: dp_t
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - cathode_AM_thickness
+    - anode_AM_thickness
+  OUTPUT:
+  - NAME: s_high
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - specific_capacity_2C
+    - specific_capacity_3C
+    - specific_capacity_5C
+    LOSS: MSE
+    METRIC:
+    - MSE
+    - MAE
+    - R2
+  - NAME: s_low
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - specific_capacity_0.1C
+    - specific_capacity_0.2C
+    - specific_capacity_0.5C
+    - specific_capacity_1C
+    LOSS: MSE
+    METRIC:
+    - MSE
+    - MAE
+    - R2
+MODEL:
+  NAME: CUSTOM_FUSION
+  ENCODER:
+  - NAME: dp_c
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: dp_a
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: dp_l
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: dp_p
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: dp_t
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  FUSION:
+  - NAME: fusion_ca
+    FUNCTION: concat
+    ITEM:
+    - dp_c
+    - dp_a
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: fusion_lpt
+    FUNCTION: concat
+    ITEM:
+    - dp_l
+    - dp_p
+    - dp_t
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: fusion_feature
+    FUNCTION: concat
+    ITEM:
+    - fusion_ca
+    - fusion_lpt
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  DECODER:
+  - NAME: s_high
+    FUNCTION: pass
+    ITEM:
+    - fusion_feature
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  - NAME: s_low
+    FUNCTION: pass
+    ITEM:
+    - fusion_feature
+    TYPE: MLP
+    LAYER: 3
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024

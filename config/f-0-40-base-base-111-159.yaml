@@ -1,0 +1,68 @@
+SAVE_ROOT: /HDD/battery/results_final/f-0-40-base-base-111-159
+TRINER:
+  LR: 0.001
+  WD: 0
+  BATCH_SIZE: 64
+  NUM_WORKER: 4
+DATASET:
+  SEED: 159
+  ROOT: ./dataset
+  TESTSET: FILTER_6FOLD_0_SEED111
+  NUM_TEST: 40
+  INPUT:
+  - NAME: dp_all
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - cathode_loading_density
+    - cathode_porosity
+    - cathode_AM_thickness
+    - anode_loading_density
+    - anode_porosity
+    - anode_AM_thickness
+  OUTPUT:
+  - NAME: s_all
+    DATA: csv
+    TYPE: filter
+    ITEM:
+    - specific_capacity_0.1C
+    - specific_capacity_0.2C
+    - specific_capacity_0.5C
+    - specific_capacity_1C
+    - specific_capacity_2C
+    - specific_capacity_3C
+    - specific_capacity_5C
+    LOSS: MSE
+    METRIC:
+    - MSE
+    - MAE
+    - R2
+MODEL:
+  NAME: CUSTOM_FUSION
+  ENCODER:
+  - NAME: dp_all
+    TYPE: MLP
+    LAYER: 10
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  FUSION:
+  - NAME: fusion_feature
+    FUNCTION: concat
+    ITEM:
+    - dp_all
+    TYPE: MLP
+    LAYER: 10
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
+  DECODER:
+  - NAME: s_all
+    FUNCTION: pass
+    ITEM:
+    - fusion_feature
+    TYPE: MLP
+    LAYER: 9
+    ACTIVATION: GELU
+    HIDDEN: 1024
+    FEATURE: 1024
